@@ -185,10 +185,11 @@ class PaymentService {
       }
       
       // Update order in database
-      order.orderStatus = orderStatus;
+      order.status = orderStatus;
       order.payment.status = paymentStatus;
       order.payment.phonePeTransactionId = statusResult.transactionId;
       order.payment.verifiedAt = new Date();
+
       
       await order.save();
       
