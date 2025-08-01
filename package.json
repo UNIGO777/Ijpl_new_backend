@@ -8,6 +8,7 @@
     "start:cluster": "node cluster.js",
     "dev": "nodemon server.js",
     "dev:cluster": "nodemon cluster.js",
+    "postinstall": "npm install class-transformer@0.4.0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
