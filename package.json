@@ -36,6 +36,9 @@
   "devDependencies": {
     "nodemon": "^3.1.10"
   },
+  "resolutions": {
+  "class-transformer": "0.4.0"
+  },
   "keywords": [
     "express",
     "mongodb",
