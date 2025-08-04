@@ -26,7 +26,7 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
     });
     
     // Get registration fee from environment
-    const registrationFee = parseInt(process.env.REGISTRATION_FEE) || 3300;
+    const registrationFee = parseInt(process.env.REGISTRATION_FEE) || 1100;
     
     // Create registration order
     const order = new Order({
@@ -133,8 +133,8 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
 
 // Verify PhonePe payment and update order
 router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
+  const { orderId } = req.params;
   try {
-    const { orderId } = req.params;
 
     // Find order
     const order = await Order.findOne({ orderId });
@@ -156,7 +156,7 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
     }
 
     // Send confirmation emails for verified online payments (sequentially)
-    if (!order.emailSent.customer) {
+    if (!order.emailSent.customer && (updateResult.orderStatus === 'confirmed' || updateResult.orderStatus === 'completed')) {
       console.log('💳 Online payment verified - starting sequential email sending...');
       
       try {
@@ -189,7 +189,7 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
       console.log('Payment verified, but emails already sent for this order');
     }
 
-    res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
+    // res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
   } catch (error) {
     console.error('Payment verification error:', error);
     res.status(500).json({
@@ -197,7 +197,10 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
       message: 'Payment verification failed',
       error: error.message
     });
+  } finally {
+    res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
   }
+
 });
 
 // PhonePe Payment Callback
