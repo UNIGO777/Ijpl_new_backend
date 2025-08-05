@@ -47,9 +47,9 @@ class CronService {
             const updateResult = await paymentService.verifyAndUpdateOrder(order, {});
 
             if (updateResult.success) {
-              // Send confirmation emails if payment verified
-              if (!order.emailSent.customer) {
-                console.log(`Payment verified - sending emails for order: ${order.orderId}`);
+              // Only send emails if payment is actually confirmed/completed, not just pending
+              if (!order.emailSent.customer && (updateResult.orderStatus === 'confirmed' || updateResult.orderStatus === 'completed')) {
+                console.log(`Payment confirmed - sending emails for order: ${order.orderId}`);
                 
                 try {
                   // Send emails sequentially like in routes/orders.js
@@ -61,7 +61,7 @@ class CronService {
                   order.emailSent.admin = true;
                   await order.save();
                   
-                  console.log(`✅ All emails sent for order: ${order.orderId}`);
+                  console.log(`✅ All emails sent for confirmed order: ${order.orderId}`);
                 } catch (emailError) {
                   console.error(`❌ Email error for order ${order.orderId}:`, emailError.message);
                   // Still update flags to avoid retrying
@@ -69,6 +69,8 @@ class CronService {
                   order.emailSent.admin = true;
                   await order.save();
                 }
+              } else if (updateResult.orderStatus === 'pending') {
+                console.log(`Payment still pending for order: ${order.orderId} - no emails sent`);
               }
               
               console.log(`Successfully verified payment for order: ${order.orderId}`);
