@@ -12,6 +12,7 @@ const {
 const paymentService = require('../services/paymentService');
 const emailService = require('../services/emailService');
 const config = require('../config');
+const axios = require('axios');
 
 // Create new registration
 router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) => {
