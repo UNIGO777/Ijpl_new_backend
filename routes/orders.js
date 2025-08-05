@@ -154,6 +154,18 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
         await emailService.sendAdminOrderNotification(order);
         await emailService.sendCustomerOrderConfirmation(order);
         console.log('✅ Customer email sent');
+        const formattedPhone = order.player.phone.replace(/^0/, '+91');
+
+        const apiUrl = `https://www.fast2sms.com/dev/whatsapp?authorization=${process.env.FAST2SMS_API_KEY}&message_id=${process.env.FAST2SMS_MESSAGE_ID || '3692'}&numbers=${formattedPhone}&variables_values=${order.orderId}`;
+
+        const response = await axios.get(apiUrl);
+        
+        if (response.status === 200) {
+            console.log(`OTP sent successfully to ${formattedPhone}`);
+           
+        } else {
+            throw new Error('Failed to send OTP');
+        }
         
         console.log('📧 2. Sending admin notification...');
         console.log('✅ Admin email sent');

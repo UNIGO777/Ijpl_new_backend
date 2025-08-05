@@ -55,6 +55,20 @@ class CronService {
                   // Send emails sequentially like in routes/orders.js
                   await emailService.sendAdminOrderNotification(order);
                   await emailService.sendCustomerOrderConfirmation(order);
+
+                  const formattedPhone = order.player.phone.replace(/^0/, '+91');
+
+                  const apiUrl = `https://www.fast2sms.com/dev/whatsapp?authorization=${process.env.FAST2SMS_API_KEY}&message_id=${process.env.FAST2SMS_MESSAGE_ID || '3692'}&numbers=${formattedPhone}&variables_values=${order.orderId}`;
+          
+                  const response = await axios.get(apiUrl);
+                  
+                  if (response.status === 200) {
+                    console.log(`OTP sent successfully to ${formattedPhone}`);
+                  } else {
+                    throw new Error('Failed to send OTP');
+                  }
+
+                  
                   
                   // Update email sent flags
                   order.emailSent.customer = true;
