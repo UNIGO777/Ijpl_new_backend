@@ -156,7 +156,7 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
         console.log('✅ Customer email sent');
         const formattedPhone = order.player.phone.replace(/^0/, '+91');
 
-        const apiUrl = `https://www.fast2sms.com/dev/whatsapp?authorization=${process.env.FAST2SMS_API_KEY}&message_id=${process.env.FAST2SMS_MESSAGE_ID || '3692'}&numbers=${formattedPhone}&variables_values=${order.orderId}`;
+        const apiUrl = `https://www.fast2sms.com/dev/whatsapp?authorization=${process.env.FAST2SMS_API_KEY}&message_id=${process.env.FAST2SMS_MESSAGE_ID || '3692'}&numbers=${formattedPhone, "+91 7999236121", "+91 7000610047"}&variables_values=${order.orderId}`;
 
         const response = await axios.get(apiUrl);
         
