@@ -91,18 +91,7 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
 
     // Send emails asynchronously (non-blocking) - Only for Cash on Delivery
     // For online payments, emails will be sent after payment verification
-    if (order.payment.method === 'cod') {
-      console.log('✅ COD Registration - starting email sequence...');
-      
-      // Start email sending tasks without waiting for them to complete
-      emailService.sendAdminOrderNotification(order);
-      emailService.sendCustomerOrderConfirmation(order);
-      
-      console.log('✅ COD Registration created, emails queued for sending in background');
-    } else {
-      console.log('ℹ️  Online payment registration created, emails will be sent after payment verification');
-      console.log('   Payment method was:', order.payment.method);
-    }
+   
 
     res.status(201).json({
       success: true,
