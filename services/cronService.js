@@ -3,6 +3,7 @@ const Order = require('../models/Order');
 const paymentService = require('./paymentService');
 const emailService = require('./emailService');
 const config = require('../config');
+const { default: axios } = require('axios');
 
 class CronService {
   constructor() {
