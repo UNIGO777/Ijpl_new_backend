@@ -122,7 +122,7 @@ app.get('/health', cacheMiddleware(300)); // Cache for 5 minutes
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Palank Top Backend API',
+    message: 'IJPL Backend API',
     version: '1.0.0',
     docs: '/api/docs'
   });
